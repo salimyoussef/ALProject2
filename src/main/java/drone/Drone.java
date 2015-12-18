@@ -12,11 +12,9 @@ import pathToNavCommands.Command;
 import pathToNavCommands.GoAheadCommand;
 import tracer.Notifiable;
 
-public class Drone extends UnicastRemoteObject implements ConfigurableRemoteIF, ControlableRemoteIF, TracableRemoteIF,Moveable {
+public class Drone implements ConfigurableRemoteIF, ControlableRemoteIF,Moveable {
 	
 	ArrayList<Command> commands;
-	//ArrayList<Notifiable> tracers = new ArrayList<Notifiable>();
-	Notifiable tracer;
 
 	public Drone() throws RemoteException{
 		super();
@@ -27,28 +25,11 @@ public class Drone extends UnicastRemoteObject implements ConfigurableRemoteIF, 
 		this.commands = commands;
 		System.out.println("Path has been loaded successfully ......");
 	}
-
-	@Override
-	public void registerForNotification(Notifiable n) throws RemoteException {
-		//this.tracers.add(n);
-		this.tracer = n;
-		System.out.println("Tracer has been added successfully......");
-	}
-
-	@Override
-	public void unregisterForNotification(Notifiable n) throws RemoteException {
-		//this.tracers.remove(n);
-		this.tracer=null;
-	}
 	
 	@Override
 	public void goAhead(EndPoint point) {
-		try {
-			this.tracer.notify(point.getX(), point.getY(), point.getZ());
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		//A remplacer cette notif par un message envoye au MOM qui sera consomme par le drone
+		//this.tracer.notify(point.getX(), point.getY(), point.getZ());
 		System.out.print("=====");
 	}
 
@@ -69,11 +50,11 @@ public class Drone extends UnicastRemoteObject implements ConfigurableRemoteIF, 
 			}
 		}
 		System.out.println(">]");
-		tracer.done();
+		//A remplacer par l'envoi d'un message au MOM qui sera consomme par l'Event Manager
+		//tracer.done();
 		System.out.println("Drone has reached its destination .....");
-		
-		
 	}
+
 	public static void main(String [] args) throws RemoteException, MalformedURLException{
 		Drone drone = new Drone();
 		Naming.rebind("drone", drone);
